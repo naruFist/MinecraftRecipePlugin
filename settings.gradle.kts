@@ -1,2 +1,2 @@
-rootProject.name = "Add-Recipe"
+rootProject.name = "MinecraftRecipePlugin"
 

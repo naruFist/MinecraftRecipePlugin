@@ -1,7 +1,7 @@
 package io.github.asr.recipe.util
 
-import org.bukkit.ChatColor
-import org.bukkit.Material
+import io.github.asr.kape.KapeTextColor
+import io.github.asr.kape.text
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
@@ -20,7 +20,15 @@ val recipeConfig = YamlConfiguration.loadConfiguration(recipeListFile)
 var number: Int = 0
 
 fun YamlConfiguration.itemStack(path: String) =
-    if (this.isSet(path)) this.getItemStack(path)!! else ItemStack(Material.AIR)
+    if (this.isSet(path)) this.getItemStack(path)!! else null
+
+
+fun ShapedRecipe.setIngredientNotAir(char: Char, stack: ItemStack?) =
+    if (stack != null) setIngredient(char, stack) else this
+
+fun ShapelessRecipe.addIngredientNotAir(stack: ItemStack?) =
+    if (stack != null) addIngredient(stack) else this
+
 
 fun Plugin.loadRecipe() {
     for (i in 0 until number) {
@@ -28,61 +36,57 @@ fun Plugin.loadRecipe() {
             1 -> {
                 val recipe = ShapedRecipe(
                     NamespacedKey(this, "add-recipe"),
-                    recipeConfig.itemStack("$i.result")).shape("a")
-                    .setIngredient('a', recipeConfig.itemStack("$i.recipe.0"))
+                    recipeConfig.itemStack("$i.result")!!).shape("a")
+                    .setIngredientNotAir('a', recipeConfig.itemStack("$i.recipe.0"))
 
                 server.addRecipe(recipe)
             }
 
             2 -> {
-                val recipe = ShapedRecipe(
-                    NamespacedKey(this, "add-recipe"),
-                    recipeConfig.itemStack("$i.result")).shape("ab", "cd")
-                    .setIngredient('a', recipeConfig.itemStack("$i.recipe.0"))
-                    .setIngredient('b', recipeConfig.itemStack("$i.recipe.1"))
-                    .setIngredient('c', recipeConfig.itemStack("$i.recipe.2"))
-                    .setIngredient('d', recipeConfig.itemStack("$i.recipe.3"))
-
-                server.addRecipe(recipe)
+                server.addRecipe(
+                    add2x2recipe(recipeConfig.itemStack("$i.recipe.0"),
+                    recipeConfig.itemStack("$i.recipe.1"),
+                    recipeConfig.itemStack("$i.recipe.2"),
+                    recipeConfig.itemStack("$i.recipe.3"),
+                    recipeConfig.itemStack("$i.result")!!)
+                )
             }
 
             3 -> {
-                val recipe = ShapedRecipe(
-                    NamespacedKey(this, "add-recipe"),
-                    recipeConfig.itemStack("$i.result")).shape("abc", "def", "ghi")
-                    .setIngredient('a', recipeConfig.itemStack("$i.recipe.0"))
-                    .setIngredient('b', recipeConfig.itemStack("$i.recipe.1"))
-                    .setIngredient('c', recipeConfig.itemStack("$i.recipe.2"))
-                    .setIngredient('d', recipeConfig.itemStack("$i.recipe.3"))
-                    .setIngredient('e', recipeConfig.itemStack("$i.recipe.4"))
-                    .setIngredient('f', recipeConfig.itemStack("$i.recipe.5"))
-                    .setIngredient('g', recipeConfig.itemStack("$i.recipe.6"))
-                    .setIngredient('h', recipeConfig.itemStack("$i.recipe.7"))
-                    .setIngredient('i', recipeConfig.itemStack("$i.recipe.8"))
-
-                server.addRecipe(recipe)
+                server.addRecipe(
+                    add3x3recipe(recipeConfig.itemStack("$i.recipe.0"),
+                        recipeConfig.itemStack("$i.recipe.1"),
+                        recipeConfig.itemStack("$i.recipe.2"),
+                        recipeConfig.itemStack("$i.recipe.3"),
+                        recipeConfig.itemStack("$i.recipe.4"),
+                        recipeConfig.itemStack("$i.recipe.5"),
+                        recipeConfig.itemStack("$i.recipe.6"),
+                        recipeConfig.itemStack("$i.recipe.7"),
+                        recipeConfig.itemStack("$i.recipe.8"),
+                        recipeConfig.itemStack("$i.result")!!)
+                )
             }
 
             4 -> {
                 val recipe = ShapelessRecipe(
                     NamespacedKey(this, "add-recipe"),
-                    recipeConfig.itemStack("$i.result"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.0"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.1"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.2"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.3"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.4"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.5"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.6"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.7"))
-                    .addIngredient(recipeConfig.itemStack("$i.recipe.8"))
+                    recipeConfig.itemStack("$i.result")!!)
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.0"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.1"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.2"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.3"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.4"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.5"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.6"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.7"))
+                    .addIngredientNotAir(recipeConfig.itemStack("$i.recipe.8"))
 
                 server.addRecipe(recipe)
             }
         }
     }
 
-    logger.info("${ChatColor.GREEN}Recipe Loaded Successful!")
+    server.sendMessage(text("Recipe Loaded Successful!").color(KapeTextColor.GREEN.toTextColor()))
 }
 
 fun Plugin.unloadRecipe() {
@@ -90,12 +94,12 @@ fun Plugin.unloadRecipe() {
         this.server.removeRecipe(NamespacedKey(this, "$it"))
     }
 
-    logger.info("${ChatColor.RED}Recipe Unloaded Successful!")
+    server.sendMessage(text("Recipe Unloaded Successful!").color(KapeTextColor.RED.toTextColor()))
 }
 
 fun Plugin.reloadRecipe() {
     unloadRecipe()
     loadRecipe()
 
-    logger.info("${ChatColor.GREEN}Recipe Reloaded Successful!")
+    server.sendMessage(text("Recipe Reloaded Successful!").color(KapeTextColor.GREEN.toTextColor()))
 }

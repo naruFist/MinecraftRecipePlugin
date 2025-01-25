@@ -1,9 +1,9 @@
 # ReMake Add-Recipe
 name: Recipe
 main: io.github.asr.recipe.RecipePlugin
-version: 1.18.2
-api-version: 1.18
-author: ASR
+version: 1.21.4-alpha
+api-version: 1.21
+author: naruFist
 commands:
   recipe:
     permission: op

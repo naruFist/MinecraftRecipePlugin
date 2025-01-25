@@ -1,10 +1,7 @@
 package io.github.asr.recipe.commands
 
-import io.github.asr.recipe.util.loadRecipe
-import io.github.asr.recipe.util.reloadRecipe
-import io.github.asr.recipe.util.unloadRecipe
 import io.github.asr.recipe.RecipePlugin
-import io.github.asr.recipe.util.openAddRecipeGUI
+import io.github.asr.recipe.util.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -20,7 +17,7 @@ class RecipeCommand(private val plugin: RecipePlugin) : CommandExecutor, TabComp
                 when (args[0]) {
                     "add" -> sender.openAddRecipeGUI(plugin)
 
-//                    "list" -> sender.openRecipeList(plugin, 1)
+                    "list" -> sender.openRecipeList(plugin, 1)
 
                     "reload" -> plugin.reloadRecipe()
 
@@ -38,14 +35,14 @@ class RecipeCommand(private val plugin: RecipePlugin) : CommandExecutor, TabComp
         command: Command,
         alias: String,
         args: Array<out String>
-    ): MutableList<String>? {
+    ): MutableList<String> {
         val commandList = mutableListOf<String>()
 
         if (command.name == "recipe") {
             when (args.size) {
                 1 -> {
                     commandList.add("add")
-//                    commandList.add("list")
+                    commandList.add("list")
                     commandList.add("reload")
                     commandList.add("unload")
                     commandList.add("load")
