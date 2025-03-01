@@ -1,5 +1,7 @@
 package io.github.asr.recipe.commands
 
+import io.github.asr.kape.KapeTextColor
+import io.github.asr.kape.text
 import io.github.asr.recipe.RecipePlugin
 import io.github.asr.recipe.util.*
 import org.bukkit.command.Command
@@ -24,6 +26,16 @@ class RecipeCommand(private val plugin: RecipePlugin) : CommandExecutor, TabComp
                     "unload" -> plugin.unloadRecipe()
 
                     "load" -> plugin.loadRecipe()
+
+                    "autoload" -> {
+                        val autoload = recipeConfig.getBoolean("auto-load")
+                        if (autoload) plugin.server.sendMessage(text("[Recipe] Auto-Load Disabled")
+                            .color(KapeTextColor.RED.toTextColor()))
+                        else plugin.server.sendMessage(text("[Recipe] Auto-Load Enabled")
+                            .color(KapeTextColor.GREEN.toTextColor()))
+
+                        recipeConfig.set("auto-load", !autoload)
+                    }
                 }
             }
         }
@@ -46,6 +58,7 @@ class RecipeCommand(private val plugin: RecipePlugin) : CommandExecutor, TabComp
                     commandList.add("reload")
                     commandList.add("unload")
                     commandList.add("load")
+                    commandList.add("autoload")
                 }
             }
         }

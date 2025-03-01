@@ -22,11 +22,10 @@ private fun Player.openRecipe(plugin: Plugin, recipeNumber: Int) {
             })
         }
 
-        /*
         (0 until 9).forEach {
-            // TODO : 레시피 보여주기
+            val k = recipeConfig.itemStack("$recipeNumber.recipe.$it")
+            if (k != null) slot(recipeList[it], k)
         }
-        */
 
         slot(recipeResult, recipeConfig.itemStack("$recipeNumber.result")!!)
 
@@ -35,7 +34,7 @@ private fun Player.openRecipe(plugin: Plugin, recipeNumber: Int) {
                 it.displayName(Component.text("뒤로 가기").color(KapeTextColor.GREEN.toTextColor()))
             }
         }) {
-            this@openRecipe.openRecipeList(plugin, (recipeNumber - 1) / itemsInPage + 1)
+            this@openRecipe.openRecipeList(plugin, recipeNumber / itemsInPage + 1)
         }
 
         // TODO: 2021-10-07 Add Delete Recipe Button.
@@ -45,7 +44,7 @@ private fun Player.openRecipe(plugin: Plugin, recipeNumber: Int) {
 fun Player.openRecipeList(plugin: Plugin, page: Int) {
     this.gui(plugin, InventoryType.CHEST_54, Component.text("Recipe-List")) {
         val start = (page - 1) * itemsInPage
-        for (i in start until min(page * itemsInPage, number - start + 1)) {
+        for (i in start until min(page * itemsInPage, number - start)) {
             slot(i, recipeConfig.itemStack("$i.result")!!) {
                 this@openRecipeList.openRecipe(plugin, i)
             }
@@ -87,7 +86,5 @@ fun Player.openRecipeList(plugin: Plugin, page: Int) {
         }) {
             this@openRecipeList.openRecipeList(plugin, page + 1)
         }
-
-        // TODO: 2021-10-07 Make Recipe List Page Working
     }
 }
