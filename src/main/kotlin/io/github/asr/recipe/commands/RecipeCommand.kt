@@ -35,6 +35,8 @@ class RecipeCommand(private val plugin: RecipePlugin) : CommandExecutor, TabComp
                             .color(KapeTextColor.GREEN.toTextColor()))
 
                         recipeConfig.set("auto-load", !autoload)
+
+                        recipeConfig.save(recipeListFile)
                     }
                 }
             }

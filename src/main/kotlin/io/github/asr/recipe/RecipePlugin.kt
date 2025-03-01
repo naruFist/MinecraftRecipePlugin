@@ -18,11 +18,11 @@ class RecipePlugin : JavaPlugin() {
             localException.printStackTrace()
         }
 
-        if (!recipeConfig.isSet("auto-load")) recipeConfig.set("auto-load", false)
-        else if (recipeConfig.getBoolean("auto-load")) loadRecipe()
-
         if (recipeConfig.isSet("number")) number = recipeConfig.getInt("number")
         else recipeConfig.set("number", 0)
+
+        if (!recipeConfig.isSet("auto-load")) recipeConfig.set("auto-load", false)
+        else if (recipeConfig.getBoolean("auto-load")) loadRecipe()
 
         server.getPluginCommand("recipe")?.apply {
             setExecutor(RecipeCommand(this@RecipePlugin))
